@@ -17,14 +17,6 @@ jobs:
       run: |
         git clone https://github.com/flutter/flutter.git -b stable --depth 1
         echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-        echo "class BuildConfig {
-      static const String buildTime = '${BUILD_TIME}';
-      static const String commitHash = '${COMMIT_HASH}';
-    }" > lib/build_config.dart
-
-      env:
-        BUILD_TIME: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
-        COMMIT_HASH: ${{ github.sha }}
     
     - name: 安装 Linux 构建依赖
       run: |
