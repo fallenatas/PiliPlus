@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     
     steps:
     - uses: actions/checkout@v4
@@ -17,24 +17,21 @@ jobs:
       run: |
         git clone https://github.com/flutter/flutter.git -b stable --depth 1
         echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-
+    
     - name: 安装 Linux 构建依赖
       run: |
         sudo apt-get update
         sudo apt-get install -y clang cmake ninja-build pkg-config \
-          libgtk-3-dev libasound2-dev libegl1-mesa-dev libpulse-dev appimagetool
-
-    - name: 配置 Linux 支持
-      run: flutter config --enable-linux-desktop
-
-    - name: 检查 Flutter 环境
-      run: flutter doctor -v
+          libgtk-3-dev libasound2-dev libegl1-mesa-dev libpulse-dev
 
     - name: 获取依赖包
       run: flutter pub get
 
+    - name: 配置 Linux 支持
+      run: flutter config --enable-linux-desktop
+
     - name: 构建 Linux 应用
-      run: flutter build appimage --release
+      run: flutter build linux --release --no-sound-null-safety
 
     - name: 上传构建产物
       uses: actions/upload-artifact@v4
