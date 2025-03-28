@@ -15,7 +15,8 @@ jobs:
     - uses: subosito/flutter-action@v2
 
     - name: Generate Build Config
-        run:
+    
+      run:
           echo "// Auto-generated file" > lib/build_config.dart
           echo "class BuildConfig {" >> lib/build_config.dart
           echo "  static const bool isDebug = ${DEBUG};" >> lib/build_config.dart
