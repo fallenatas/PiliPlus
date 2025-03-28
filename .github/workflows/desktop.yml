@@ -1,0 +1,39 @@
+name: Build Flutter Linux Desktop
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: 安装 Flutter SDK
+      run: |
+        git clone https://github.com/flutter/flutter.git -b stable --depth 1
+        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+    
+    - name: 安装 Linux 构建依赖
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libasound2-dev
+
+    - name: 检查 Flutter 环境
+      run: flutter doctor -v
+
+    - name: 获取依赖包
+      run: flutter pub get
+
+    - name: 构建 Linux 应用
+      run: flutter build linux --release
+
+    - name: 上传构建产物
+      uses: actions/upload-artifact@v4
+      with:
+        name: Linux-App
+        path: build/linux/x64/release/bundle
