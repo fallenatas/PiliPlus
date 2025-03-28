@@ -1,0 +1,39 @@
+name: Build Flutter Linux Desktop
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-20.04  # 使用 Ubuntu 20.04 环境 [[4]]
+    
+    steps:
+    - uses: actions/checkout@v4  # 获取代码库
+
+    - name: 安装 Flutter SDK
+      run: |
+        git clone https://github.com/flutter/flutter.git -b stable --depth 1
+        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH  # 设置环境变量 [[6]][[7]]
+    
+    - name: 安装 Linux 构建依赖
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev  # 安装桌面构建所需依赖 [[3]]
+
+    - name: 检查 Flutter 环境
+      run: flutter doctor -v  # 验证环境配置 [[6]]
+
+    - name: 获取依赖包
+      run: flutter pub get  # 安装 Dart/Flutter 依赖 [[8]]
+
+    - name: 构建 Linux 应用
+      run: flutter build linux --release  # 编译 Linux 桌面版 [[3]]
+
+    - name: 上传构建产物
+      uses: actions/upload-artifact@v4
+      with:
+        name: Linux-App
+        path: build/linux/x64/release/bundle  # 上传生成的可执行文件 [[5]]
