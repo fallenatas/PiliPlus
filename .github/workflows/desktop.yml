@@ -12,6 +12,16 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+    - uses: subosito/flutter-action@v2
+
+    - name: Generate Build Config
+        run: |
+          echo "// Auto-generated file" > lib/build_config.dart
+          echo "class BuildConfig {" >> lib/build_config.dart
+          echo "  static const bool isDebug = ${DEBUG};" >> lib/build_config.dart
+          echo "  static const String buildTime = '${BUILD_TIME}';" >> lib/build_config.dart
+          echo "  static const String commitHash = '${COMMIT_HASH}';" >> lib/build_config.dart
+          echo "}" >> lib/build_config.dart
 
     - name: 安装 Flutter SDK
       run: |
